@@ -84,6 +84,6 @@ app.use((err, req, res, next) => {
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port no ${PORT}`);
     console.log(`Endpoints: /api/products, /api/sales, /suppliers, /categories, /api/users, /customers, /giveloans, /inventory`);
 });
