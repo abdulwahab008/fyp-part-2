@@ -20,7 +20,7 @@ function generateReport() {
   
     reportOutput.innerHTML = "";
   
-    if (reportType === "sales" || reportType === "stock" || reportType === "commission" || reportType === "closing") {
+    if (reportType === "sales" || reportType === "stock" || reportType === "commission" || reportType === "closing" || reportType === "giveloan" || reportType === "receiveloan" ) {
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/api/reports/generateReport", true);
       xhr.setRequestHeader("Content-Type", "application/json");
@@ -60,6 +60,10 @@ function generateReport() {
     var totalComissionAmount=0;
     var totalDiscount=0;
     var totalDiscountAmount=0;
+    var totalInstallment=0;
+    var totalLoan=0;
+    var totalRemainingAmount=0;
+
 
 
     // Create a table element
@@ -105,6 +109,12 @@ function generateReport() {
             else if (key === 'discountAmount') {
                 totalDiscountAmount += parseFloat(data[i][key]);
             }
+            else if (key==='installment'){
+               totalInstallment += parseFloat(data[i][key]);
+            }
+            else if (key==='total_loan'){
+                totalLoan = parseFloat(data[i][key]);
+             }
         }
     }
 
@@ -140,15 +150,20 @@ function generateReport() {
             totalCell.style.backgroundColor = "#ef8354";
             totalCell.innerHTML = totalComissionAmount.toFixed(2);
         }
-        else if (key === 'discount') {
+       else if (key === 'installment') {
             totalCell.style.fontWeight = "bold";
             totalCell.style.backgroundColor = "#ef8354";
-            totalCell.innerHTML = totalDiscount.toFixed(2);
-        }
+            totalCell.innerHTML = totalInstallment.toFixed(2);
+       }
         else if (key === 'discountAmount') {
             totalCell.style.fontWeight = "bold";
             totalCell.style.backgroundColor = "#ef8354";
             totalCell.innerHTML = totalDiscountAmount.toFixed(2);
+        }
+        else if (key === 'total_loan') {
+            totalCell.style.fontWeight = "bold";
+            totalCell.style.backgroundColor = "#ef8354";
+            totalCell.innerHTML = totalLoan.toFixed(2);
         }
         else {
             // For other columns, leave them blank

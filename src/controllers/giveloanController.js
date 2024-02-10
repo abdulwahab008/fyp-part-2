@@ -1,4 +1,4 @@
-const Giveloan = require('../models/giveloanModel');
+const Giveloan = require('../models/giveLoanModel');
 const db = require('../models/db');
 const GiveloanController = {
   submitLoan: async (req, res) => {
@@ -65,7 +65,30 @@ getCustomerNames: async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 },
+
+deleteLoan: async (req, res) => {
+  try {
+      const { transactionId } = req.params;
+
+      const query = `
+          DELETE FROM giveloan
+          WHERE transaction_id = ?
+      `;
+
+      const values = [transactionId];
+
+      await db.query(query, values);
+
+      res.status(200).json({ success: true, message: 'Loan deleted successfully.' });
+  } catch (error) {
+      console.error('Error deleting loan:', error);
+      res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+},
+
+
 };
+
 
 
 

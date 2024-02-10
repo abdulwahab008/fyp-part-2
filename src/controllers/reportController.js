@@ -1,7 +1,9 @@
-const salesModel = require('../models/salesModel'); // Add this line
+const salesModel = require('../models/salesModel');
 const stockModel = require('../models/inventory');
 const commissionModel = require('../models/commissionModel');
 const closingModel = require('../models/closingModel');
+const giveLoanModel = require('../models/giveLoanModel');
+const receiveLoanModel = require('../models/receiveLoanModel');
 async function generateReport(req, res) {
     try {
       const reportType = req.body.reportType;
@@ -27,6 +29,14 @@ async function generateReport(req, res) {
           // Add logic to filter closing data by date range
           reportData = await closingModel.getClosingReport({ fromDate, toDate });
           break;
+          case 'giveloan':
+            // Add logic to filter give loan data by date range
+            reportData = await giveLoanModel.giveLoanReport({ fromDate, toDate });
+            break;
+          case 'receiveloan':
+            // Add logic to filter receive loan data by date range
+            reportData = await receiveLoanModel.getReceiveLoanReport({ fromDate, toDate });
+            break;
         default:
           return res.status(400).json({ success: false, error: 'Invalid report type' });
       }

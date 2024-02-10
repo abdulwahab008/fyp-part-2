@@ -1,13 +1,14 @@
 {
   "name": "fypfinal",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "mobile app",
+  "main": "app.js",  
   "scripts": {
+    "start": "node app.js",  
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "abdul wahab",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -22,5 +23,6 @@
     "nodemailer": "^6.9.9",
     "path": "^0.12.7",
     "uuid": "^9.0.1"
-  }
+  },
+  "devDependencies": {}
 }

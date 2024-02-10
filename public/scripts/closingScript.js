@@ -7,21 +7,53 @@ function getCurrentDate() {
     return `${year}-${month}-${day}`;
 }
 
+
+const totalLoanEndpoint = '/api/closings/getTotalLoan';
+
+async function fetchTotalLoan() {
+    try {
+        const response = await fetch(totalLoanEndpoint);
+        const totalLoan = await response.json();
+        return totalLoan;
+    } catch (error) {
+        console.error('Error fetching total loan:', error);
+        throw error;
+    }
+}
+
+
+async function updateLoanField() {
+    try {
+        const totalLoan = await fetchTotalLoan();
+        var loanInput = document.getElementById('loan');
+        loanInput.value = totalLoan;
+    } catch (error) {
+        console.error('Error fetching total loan:', error);
+    }
+}
 document.addEventListener('DOMContentLoaded', function () {
+    // Set the default date in the 'date' input field
     var dateInput = document.getElementById('date');
     dateInput.value = getCurrentDate();
-    const submit=document.getElementById('submit');
-    if(submit){
-        submit.addEventListener('click', saveClosing)
+
+    // Add event listeners
+    const submit = document.getElementById('submit');
+    const backButton = document.getElementById('back-button');
+
+    if (submit) {
+        submit.addEventListener('click', saveClosing);
     }
-    const backButton=document.getElementById('back-button');
-    if(backButton){
-        backButton.addEventListener("click",goBack);
+
+    if (backButton) {
+        backButton.addEventListener('click', goBack);
     }
+    
+    // Fetch total loan and update the loan input field when the page loads
+    updateLoanField();
 });
 
 
-function saveClosing(event) {
+async function saveClosing(event) {
     event.preventDefault();
 
     // Get form data
@@ -32,45 +64,61 @@ function saveClosing(event) {
     var ufoneLoad = parseFloat(document.getElementById('ufoneLoad').value) || 0;
     var easypaisa = parseFloat(document.getElementById('easypaisa').value) || 0;
     var jazzCash = parseFloat(document.getElementById('jazzCash').value) || 0;
-    var loan = parseFloat(document.getElementById('loan').value) || 0;
+    var loanInput = document.getElementById('loan');  // Assuming the loan input has an ID of 'loan'
+  
     var cash = parseFloat(document.getElementById('cash').value) || 0;
     var bank = parseFloat(document.getElementById('bank').value) || 0;
     var credit = parseFloat(document.getElementById('credit').value) || 0;
 
-    var total = (telenorLoad + zongLoad + jazzLoad + ufoneLoad + easypaisa + jazzCash + loan + cash + bank) - credit;
+    // Use try-catch block to handle errors with await
+    try {
+        // Fetch total loan and update the loan input field
+        await updateLoanField();
 
-    var closingData = {
-        date: date,
-        telenorLoad: telenorLoad,
-        zongLoad: zongLoad,
-        jazzLoad:jazzLoad,
-        ufoneLoad: ufoneLoad,
-        easypaisa: easypaisa,
-        jazzCash: jazzCash,
-        loan: loan,
-        cash: cash,
-        bank: bank,
-        credit: credit,
-        total: total,
-    };
+        // Use the updated loan input field value
+        var loanInput = document.getElementById('loan');
+        var loan = parseFloat(loanInput.value) || 0;
 
-    fetch('/api/closings/saveClosing', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(closingData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      
-        console.log('Closing saved successfully:', data);
-        fetchClosingData();
-    })
-    .catch(error => {
-        console.error('Error saving closing:', error);
-    });
+        // Calculate the total
+        var total = (telenorLoad + zongLoad + jazzLoad + ufoneLoad + easypaisa + jazzCash + loan + cash + bank) - credit;
+
+        var closingData = {
+            date: date,
+            telenorLoad: telenorLoad,
+            zongLoad: zongLoad,
+            jazzLoad: jazzLoad,
+            ufoneLoad: ufoneLoad,
+            easypaisa: easypaisa,
+            jazzCash: jazzCash,
+            loan: loan,
+            cash: cash,
+            bank: bank,
+            credit: credit,
+            total: total,
+        };
+
+        // Save closing data
+        fetch('/api/closings/saveClosing', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(closingData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Closing saved successfully:', data);
+            // Fetch and update closing data after saving
+            fetchClosingData();
+        })
+        .catch(error => {
+            console.error('Error saving closing:', error);
+        });
+    } catch (error) {
+        console.error('Error fetching total loan:', error);
+    }
 }
+
 
 function fetchClosingData() {
     fetch('/api/closings/getAllClosing')
@@ -106,7 +154,7 @@ function fetchClosingData() {
 
 // Call the function to fetch and display data when the page loads
 document.addEventListener('DOMContentLoaded', function () {
-    fetchUserData()
+   // fetchUserData()
     fetchClosingData();
 });
 

@@ -1,4 +1,5 @@
 const db = require('./db');
+
 const { v4: uuidv4 } = require('uuid');
 
 const Giveloan = {
@@ -62,7 +63,18 @@ const Giveloan = {
       throw error;
     }
   },
-
+  
+  giveLoanReport: async (dateRange) => {
+    try {
+      const query = 'SELECT * FROM giveloan WHERE date BETWEEN ? AND ?'; 
+      const values = [dateRange.fromDate, dateRange.toDate];
+      const [giveloan] = await db.query(query, values);
+      return giveloan;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
 };
 
 module.exports = Giveloan;

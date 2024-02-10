@@ -25,9 +25,7 @@ async function getCommissions() {
 }
 async function getCommissionReport(dateRange) {
   try {
-    // Implement logic to fetch commission data based on dateRange and specificDate
-    // Use parameters to construct your SQL queries
-
+ 
     const query = 'SELECT * FROM commissions WHERE date BETWEEn ? AND ?'; // Replace ... with your conditions
     const [commissions] = await pool.execute(query, [dateRange.fromDate, dateRange.toDate]);
     return commissions;

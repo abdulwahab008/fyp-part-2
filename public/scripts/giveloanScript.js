@@ -14,8 +14,21 @@ container.addEventListener('input', function(event){
     if(event.target.matches('#amount') || event.target.matches('#installment')){
         calculateMonthlyInstallment();
     }
+
+    
 })
 })
+
+function attachDeleteButtonEvents() {
+    const deleteButtons = document.querySelectorAll('#loanTableBody button');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const transactionId = this.getAttribute('data-transaction-id');
+            deleteLoan(transactionId);
+        });
+    });
+}
 // Function to fetch and display loan data
 async function fetchAndDisplayLoanData() {
     try {
@@ -38,9 +51,12 @@ async function fetchAndDisplayLoanData() {
                 <td>${loan.amount}</td>
                 <td>${loan.installment}</td>
                 <td>${loan.monthly_installment}</td>
+                <td><button data-transaction-id="${loan.transaction_id}">Delete</button></td>
+                
             `;
             tableBody.appendChild(row);
         });
+        attachDeleteButtonEvents();
     } catch (error) {
         console.error('Error fetching loan data:', error);
     }
@@ -103,6 +119,30 @@ console.log('Form Data:', formData);
         document.getElementById('successMessage').textContent = 'Error submitting loan. Please try again.';
     }
 });
+
+function deleteLoan(transactionId) {
+    const confirmDelete = confirm('Are you sure you want to delete this loan?');
+
+    if (confirmDelete) {
+        // Perform the deletion
+        fetch(`/giveloans/delete_loan/${transactionId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.ok) {
+                // Refresh the table after deletion
+                fetchAndDisplayLoanData();
+                console.log('Loan deleted successfully!');
+            } else {
+                console.error('Failed to delete loan.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting loan:', error);
+        });
+    }
+}
+
 async function calculateTotalLoan() {
     try {
         const tableRows = document.querySelectorAll('#loanTableBody tr');

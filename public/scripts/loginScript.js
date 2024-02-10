@@ -15,8 +15,7 @@ function performLogin() {
     const password = document.getElementById('password').value;
 
 
-    console.log('Username:', emailOrUsername);
-    console.log('Password:', password);
+
 
     // Validate the form
     if (!validateForm()) {

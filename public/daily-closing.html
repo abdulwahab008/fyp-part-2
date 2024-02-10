@@ -145,8 +145,11 @@
 
         <label for="jazzCash">JazzCash:</label>
         <input type="number" id="jazzCash" name="jazzCash" required>
-        <label for="loan">Loan:</label>
-        <input type="number" id="loan" name="loan" required>
+        <div id="totalLoanContainer">
+            <label for="loan">Loan:</label>
+            <input type="number" id="loan" name="loan" value="0" readonly>
+         
+        </div>
 
         <label for="cash">Cash:</label>
         <input type="number" id="cash" name="cash" required>

@@ -1,4 +1,5 @@
-const receiveloanModel = require('../models/receiveloanModel');
+const receiveloanModel = require('../models/receiveLoanModel');
+
 
 async function receiveLoan(req, res) {
     try {
@@ -108,4 +109,17 @@ async function fetchAllData(req, res) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-module.exports = { receiveLoan, searchTransaction, getMonthlyInstallmentAmountHandler, fetchAllData };
+async function deleteLoan(req, res) {
+    try {
+        const { transactionId } = req.params;
+
+        // Call the deleteLoan method from your model
+        await receiveloanModel.deleteLoan(transactionId);
+
+        res.status(200).json({ success: true, message: 'Loan deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting loan:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+module.exports = { receiveLoan, searchTransaction, getMonthlyInstallmentAmountHandler, fetchAllData, deleteLoan };

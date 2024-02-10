@@ -6,6 +6,11 @@ async function saveClosing(req, res) {
         console.log('Request received:', req.body);
         const closingData = req.body;
 
+         const totalLoan = await closingModel.getTotalLoan();
+
+        // Include total loan in closing data
+        closingData.loan = totalLoan;
+
         const closingId = await closingModel.saveClosing(closingData);
 
         console.log('Closing data saved successfully');
@@ -26,7 +31,18 @@ async function getAllClosing(req, res) {
     }
 }
 
+async function getTotalLoan(req, res) {
+    try {
+        const totalLoan = await closingModel.getTotalLoan();
+        res.json(totalLoan);
+    } catch (error) {
+        console.error('Error fetching total loan:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
 module.exports = {
     saveClosing,
     getAllClosing,
+    getTotalLoan
 };

@@ -149,6 +149,17 @@ document.getElementById('receiveLoanForm').addEventListener('submit', async func
     }
 });
 
+function attachDeleteButtonEvents() {
+    const deleteButtons = document.querySelectorAll('#loanTableBody button');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const transactionId = this.getAttribute('data-transaction-id');
+            deleteLoan(transactionId);
+        });
+    });
+}
+
 async function fetchDataAndDisplay() {
     try {
         const response = await fetch('http://localhost:3000/receiveloans/fetch_all');
@@ -170,12 +181,15 @@ async function fetchDataAndDisplay() {
                     <td>${row.loan_type}</td>
                     <td>${row.installment_number}</td>
                     <td>${row.remaining_amount}</td>
+                    <td><button data-transaction-id="${row.transaction_id}">Delete</button></td>
                 `;
                 document.getElementById('loanTableBody').appendChild(newRow);
             });
+            attachDeleteButtonEvents()
         } else {
             console.error('Failed to fetch data:', response.statusText);
         }
+       
     } catch (error) {
         console.error('An error occurred during data fetch:', error);
     }
@@ -202,6 +216,28 @@ function searchAndHighlight() {
     }
 }
 
+function deleteLoan(transactionId) {
+    const confirmDelete = confirm('Are you sure you want to delete this loan?');
+
+    if (confirmDelete) {
+        // Perform the deletion
+        fetch(`/receiveloans/delete_loan/${transactionId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.ok) {
+                // Refresh the table after deletion
+                fetchDataAndDisplay();
+                console.log('Loan deleted successfully!');
+            } else {
+                console.error('Failed to delete loan.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting loan:', error);
+        });
+    }
+}
 
 function fetchUserData() {
     // Make a fetch request to get user data

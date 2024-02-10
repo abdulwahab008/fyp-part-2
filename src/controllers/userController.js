@@ -44,7 +44,7 @@ const UserController = {
         try {
             const { name, email, phone, username, password } = req.body;
 
-            console.log("Received data:", { name, email, phone, username, password });
+           // console.log("Received data:", { name, email, phone, username, password });
 
             // Check if the username is already taken
             const existingUser = await UserModel.getByUsername(username);
@@ -71,7 +71,7 @@ const UserController = {
     login: async (req, res) => {
         try {
             const { emailOrUsername, password } = req.body;
-            console.log('Received data:', { emailOrUsername, password });
+           // console.log('Received data:', { emailOrUsername, password });
     
             // Check if the provided value is an email or username
             const isEmail = emailOrUsername.includes('@');
